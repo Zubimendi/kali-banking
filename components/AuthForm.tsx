@@ -11,14 +11,21 @@ import { Form } from "@/components/ui/form";
 import CustomFormField from "./CustomFormField";
 import { authFormSchema } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { signIn, signUp } from "@/lib/actions/user.actions";
+import { useRouter } from "next/navigation";
+
 
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  // const [passwordVisible, setPasswordVisible] = useState(false)
+  const router = useRouter()
+
+  const formSchema = authFormSchema(type);
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof authFormSchema>>({
-    resolver: zodResolver(authFormSchema),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -26,13 +33,34 @@ const AuthForm = ({ type }: { type: string }) => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof authFormSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     setIsLoading(true);
-    console.log(values);
-    setIsLoading(false);
-  }
+    try {
+      //TODO: Sign up using AppWrite and create plaid link token
+      // Check if type is sign-in or sign-up
+
+      if (type === "sign-up") {
+          const newUser = await signUp(values)
+          console.log("Appwrite Brudda",newUser)
+          setUser(newUser)
+      }
+      if (type === "sign-in") {
+         const response = await signIn({
+          email: values.email,
+          password: values.password
+         })
+
+         if(response) router.push('/')
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <section className="auth-form">
       <header className="flex flex-col gap-5 md:gap-8">
@@ -68,55 +96,69 @@ const AuthForm = ({ type }: { type: string }) => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               {type === "sign-up" && (
                 <>
-                  <CustomFormField
-                    control={form.control}
-                    label="First Name"
-                    name="firstname"
-                    placeholder="Enter your first name"
-                    type="text"
-                  />
-                  <CustomFormField
-                    control={form.control}
-                    label="Last Name"
-                    name="lastname"
-                    placeholder="Enter your last name"
-                    type="text"
-                  />
+                  <div className="flex gap-4">
+                    <CustomFormField
+                      control={form.control}
+                      label="First Name"
+                      name="firstname"
+                      placeholder="Enter your first name"
+                      type="text"
+                    />
+                    <CustomFormField
+                      control={form.control}
+                      label="Last Name"
+                      name="lastname"
+                      placeholder="Enter your last name"
+                      type="text"
+                    />
+                  </div>
                   <CustomFormField
                     control={form.control}
                     label="Address"
-                    name="address"
+                    name="address1"
                     placeholder="Enter your address"
                     type="text"
                   />
                   <CustomFormField
                     control={form.control}
-                    label="State"
-                    name="state"
-                    placeholder="Example: NY"
+                    label="City"
+                    name="city"
+                    placeholder="Enter your city"
                     type="text"
                   />
-                  <CustomFormField
-                    control={form.control}
-                    label="Postal Code"
-                    name="postalcode"
-                    placeholder="Example: 11011 "
-                    type="text"
-                  />
-                  <CustomFormField
-                    control={form.control}
-                    label="Date Of Birth"
-                    name="dateofbirth"
-                    placeholder="yyyy-mm-dd"
-                    type="text"
-                  />
-                  <CustomFormField
-                    control={form.control}
-                    label="SSN"
-                    name="ssn"
-                    placeholder="Example: 1234"
-                    type="text"
-                  />
+                  <div className="flex gap-4">
+                    <CustomFormField
+                      control={form.control}
+                      label="State"
+                      name="state"
+                      placeholder="Example: NY"
+                      type="text"
+                    />
+                    <CustomFormField
+                      control={form.control}
+                      label="Postal Code"
+                      name="postalcode"
+                      placeholder="Example: 11011 "
+                      type="text"
+                    />
+                  </div>
+
+                  <div className="flex gap-4">
+                    <CustomFormField
+                      control={form.control}
+                      label="Date Of Birth"
+                      name="dateofbirth"
+                      placeholder="yyyy-mm-dd"
+                      type="text"
+                    />
+                    <CustomFormField
+                      control={form.control}
+                      label="SSN"
+                      name="ssn"
+                      placeholder="Example: 1234"
+                      type="text"
+                    />
+                  </div>
                 </>
               )}
               <CustomFormField

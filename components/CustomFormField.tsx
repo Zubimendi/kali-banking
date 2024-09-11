@@ -4,10 +4,13 @@ import { Input } from "./ui/input";
 import { Control, FieldPath } from "react-hook-form";
 import { z } from "zod";
 import { authFormSchema } from "@/lib/utils";
+import { EyeIcon, EyeOff } from "lucide-react";
+
+const formSchema = authFormSchema("sign-up");
 
 interface FormFieldProps {
-  control: Control<z.infer<typeof authFormSchema>>;
-  name: FieldPath<z.infer<typeof authFormSchema>>;
+  control: Control<z.infer<typeof formSchema>>;
+  name: FieldPath<z.infer<typeof formSchema>>;
   type: string;
   label: string;
   placeholder: string;
@@ -35,6 +38,7 @@ const CustomFormField = ({
                 {...field}
               />
             </FormControl>
+            {/* {type === "password" ? <EyeIcon /> : null} */}
             <FormMessage className="form-message mt-2" />
           </div>
         </div>
