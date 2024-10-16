@@ -5,6 +5,7 @@ import Image from "next/image";
 import { sidebarLinks } from "@/constants";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import Footer from "./Footer";
 
 const Sidebar = ({ user }: SiderbarProps) => {
   const pathname = usePathname();
@@ -19,7 +20,7 @@ const Sidebar = ({ user }: SiderbarProps) => {
             alt="App Logo"
             className="size-[24px] max-xl:size-14" 
           />
-          <h1 className="sidebar-logo">Horizon</h1>
+          <h1 className="sidebar-logo">Vaultive</h1>
         </Link>
 
         {sidebarLinks.map((item) => {
@@ -51,7 +52,7 @@ const Sidebar = ({ user }: SiderbarProps) => {
         USER
       </nav>
 
-      FOOTER
+      <Footer user={user} type="desktop"/>
     </section>
   );
 };

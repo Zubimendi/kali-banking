@@ -14,12 +14,11 @@ import { Loader2 } from "lucide-react";
 import { signIn, signUp } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 
-
 const AuthForm = ({ type }: { type: string }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   // const [passwordVisible, setPasswordVisible] = useState(false)
-  const router = useRouter()
+  const router = useRouter();
 
   const formSchema = authFormSchema(type);
 
@@ -36,23 +35,26 @@ const AuthForm = ({ type }: { type: string }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+    console.log("User Data", values);
     setIsLoading(true);
     try {
       //TODO: Sign up using AppWrite and create plaid link token
       // Check if type is sign-in or sign-up
 
       if (type === "sign-up") {
-          const newUser = await signUp(values)
-          console.log("Appwrite Brudda",newUser)
-          setUser(newUser)
+        const newUser = await signUp(values);
+        console.log("Appwrite Brudda", newUser);
+        setUser(newUser);
       }
       if (type === "sign-in") {
-         const response = await signIn({
+        const response = await signIn({
           email: values.email,
-          password: values.password
-         })
+          password: values.password,
+        });
 
-         if(response) router.push('/')
+        console.log("Response", response);
+
+        if (response) router.push("/");
       }
       setIsLoading(false);
     } catch (error) {
@@ -72,7 +74,7 @@ const AuthForm = ({ type }: { type: string }) => {
             alt="App Logo"
           />
           <h1 className="text-26 font-ibm-plex-serif font-bold text-black-1">
-            Horizon
+          Vaultive
           </h1>
         </Link>
 
