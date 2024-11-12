@@ -28,7 +28,7 @@ const CategoryBadge = ({ category }: CategoryBadgeProps) => {
 
 const TransactionsTable = ({ transactions }: TransactionTableProps) => {
   return (
-    <Table>
+    <Table className="z-0 relative">
       <TableHeader className="bg-[#f9fafb]">
         <TableRow>
           <TableHead className="px-2">Transaction</TableHead>
